@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KinElora Family Intelligence - Register</title>
+<link rel="icon" type="image/x-icon" href="/static/icon/family_tracker.ico">
 <link rel="stylesheet" href="/static/vendor/tajawal.css">
 <script src="/static/vendor/i18n.js"></script>
 <style>
@@ -37,6 +38,38 @@ body .lang-picker .lp-panel{left:auto;right:0}
       {% for msg in messages %}
         <div class="error">{{ msg }}</div>
       {% endfor %}
+      <script>
+      (function () {
+        var arMap = null;
+        function applyFlashes() {
+          if (!arMap || typeof window.t !== 'function') return;
+          var nodes = document.querySelectorAll('.login-box .error');
+          for (var i = 0; i < nodes.length; i++) {
+            var el = nodes[i];
+            var key = el.getAttribute('data-flash-key');
+            if (!key) {
+              key = arMap[el.textContent.trim()];
+              if (!key) continue;
+              el.setAttribute('data-flash-key', key);
+            }
+            var s = window.t(key);
+            if (s && s !== key) el.textContent = s;
+          }
+        }
+        fetch('/static/vendor/i18n/ar.json')
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var m = {};
+            for (var k in d) { if (k.indexOf('srv.') === 0) m[d[k]] = k; }
+            arMap = m;
+            applyFlashes();
+          })
+          .catch(function () {});
+        if (document.readyState !== 'loading') applyFlashes();
+        document.addEventListener('DOMContentLoaded', applyFlashes);
+        document.addEventListener('i18n:ready', applyFlashes);
+      })();
+      </script>
     {% endif %}
   {% endwith %}
   <form method="POST">

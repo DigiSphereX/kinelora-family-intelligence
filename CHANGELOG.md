@@ -65,6 +65,15 @@ First public release of KinElora Family Intelligence.
   while Arabic, Persian and Urdu remain right-to-left.
 - **Fix:** the Settings *Information* panel hardcoded the English word "build";
   the label is now translated in all 14 languages.
+- **Fix:** the login and register pages did not link the application icon and
+  requested `/favicon.ico`, which returned a 404; both pages now ship the shared
+  favicon link.
+- **Fix:** server-side validation messages on the login and register pages
+  (wrong password, family name already exists, minimum name and password
+  length, and registration rate-limit warnings) were rendered raw in Arabic
+  regardless of the selected language. They are now mapped to their `srv.*`
+  dictionary keys and translated into all 14 languages, updating live with the
+  language picker.
 - Verified at runtime in all 14 languages: language switch, direction
   (RTL/LTR), reload persistence, placeholder substitution and error-free
   rendering of every view.
