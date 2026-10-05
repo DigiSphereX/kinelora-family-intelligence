@@ -1,6 +1,8 @@
 # KinElora Family Intelligence
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-0070BA)](https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2)
+<a href="https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%F0%9F%92%B9%20Donate%20with%20PayPal-PayPal-0070BA?style=for-the-badge&logo=paypal&logoColor=white" alt="Donate with PayPal" height="28"></a>
+<a href="https://github.com/sponsors/DigiSphereX" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%E2%98%95%20Sponsor%20on%20GitHub-ea4aaa?style=for-the-badge&logo=github&logoColor=white" alt="Sponsor on GitHub" height="28"></a>
+
 ![Version](https://img.shields.io/badge/version-1.0.0-f5c518)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4)
 ![Languages](https://img.shields.io/badge/languages-14-informational)
@@ -159,10 +161,44 @@ repository are released under the MIT License.
 
 ## ☕ Support this project
 
-Free and open source (MIT). If KinElora saved you time, consider a small thank-you:
+KinElora Family Intelligence is **free, offline and open source (MIT)** — no ads, no
+tracking, no premium tier, and your family data never leaves your computer. If it
+saved you time or brought your family tree back to life, a small contribution keeps
+it maintained and free for everyone.
 
-- **GitHub Sponsors** -> https://github.com/sponsors/DigiSphereX
-- **PayPal** -> https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2
+<table>
+<tr>
+<td align="center" width="50%">
+
+**PayPal — one-time gift**
+
+[![Donate with PayPal](https://img.shields.io/badge/%F0%9F%92%B9%20Donate%20with%20PayPal-PayPal-0070BA?style=for-the-badge&logo=paypal&logoColor=white&logoSize=auto)](https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2)
+
+Any amount helps. One click, no account required.
+
+</td>
+<td align="center" width="50%">
+
+**GitHub Sponsors — monthly**
+
+[![Sponsor on GitHub](https://img.shields.io/badge/%E2%98%95%20Sponsor%20on%20GitHub-ea4aaa?style=for-the-badge&logo=github&logoColor=white&logoSize=auto)](https://github.com/sponsors/DigiSphereX)
+
+Recurring support for long-term maintenance and new releases.
+
+</td>
+</tr>
+</table>
+
+**Not able to donate? These help just as much:**
+
+- ⭐ **Star the repository** so other families can find the project.
+- 🌐 **Improve a translation** — English is the reference dictionary; the other 13
+  languages fall back to English for any string not yet translated, so completing
+  them is a genuinely useful contribution.
+- 🐛 **Report a bug or send feedback** via [GitHub issues](https://github.com/DigiSphereX/kinelora-family-intelligence/issues).
+- 📖 **Share it** with the family or genealogy group you care about.
+
+Thank you for supporting independent software. 💛
 
 ---
 
