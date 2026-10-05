@@ -1681,8 +1681,8 @@ let LIFE = { countries: [], regions: {}, profiles: {}, defaultProfile: { school:
 let FAMILY = { name: '', birthCountry: '', birthRegion: '' };
 
 /* ── Family scope: which families to show in dashboard + tree ──
-   mode: 'blood' (عائلة = جدّ الأب عبر سلسلة الأبوة) | 'marriage' (مكوّن متصل بالدم والزواج)
-   selected: null = عرض الجميع | Set of family names */
+mode: 'blood' (family = an ancestor reached through the paternal chain) | 'marriage' (a component linked by blood and by marriage)
+selected: null = show everyone | Set of family names*/
 let FAMILY_SCOPE = (function () {
   try {
     const s = JSON.parse(localStorage.getItem('kielora_fam_scope') || 'null');
@@ -1709,14 +1709,14 @@ function uniFamilyName(name, used) {
   return n;
 }
 
-/* Couple-based family units (client-side, بالدم: تتفهم كعائلة = الزوج + زوجته + أولادهما).
-   كل وحدة = زوجان مرتبطان بـ spouse_id (أو والد وحيد) + أولادهما المباشرون عبر parent_id.
-   التصنيف المنطقي:
-     - roots        : الزوجان بلا أب داخل العائلة (الجذور)
-     - grandparents : لديهم أحفاد
-     - parents      : لديهم أبناء بلا أحفاد
-     - childless    : زوجان بلا أبناء
-   العضو الواحد ينتمي لوحدة واحدة (قبل أصل العائلة) حتى تبقى المجموعات منفصلة للشجرة/التلوين. */
+/*Couple-based family units (client-side, by blood and marriage: a family = husband + his wife + their children).
+Each unit = two spouses linked by spouse_id (or a single parent) + their direct children via parent_id.
+Logical classification:
+- roots        : the spouses with no parent inside the family (the roots)
+- grandparents : they have grandchildren
+- parents      : they have children but no grandchildren
+- childless    : spouses with no children
+A single member belongs to one unit only (before the family root), so the groups stay separate for the tree and the colouring.*/
 function famCoupleKey(a, b) { return [String(a), String(b)].sort().join('|'); }
 function famUnitName(persons) {
   const ms = (persons || []).filter(Boolean);
@@ -1775,7 +1775,7 @@ function buildCoupleFamilyUnits(list) {
     units.set(key, { key, name, members, kids: kidsIds, kidsCount: kids.length, isRoot, hasGrand, tier, persons });
     members.forEach(pId => headOfMember.set(pId, key));
   });
-  // ربط كل عضو بوحدته: رئيس → وحدته؛ طفل → وحدة أبيه حتى أعلى سلسلة أب.
+  // Link each member to its unit: head → his own unit; child → his father's unit, up the whole paternal chain.
   const memberUnit = new Map();
   (list || []).forEach(m => {
     const mid = String(m.id);
@@ -1787,13 +1787,13 @@ function buildCoupleFamilyUnits(list) {
       if (headOfMember.has(pid)) { k = headOfMember.get(pid); break; }
       node = byId.get(pid);
     }
-    if (!k) k = 'i-' + mid; // معزول (لا أب له في العائلة)
+    if (!k) k = 'i-' + mid; // Isolated (has no parent inside the family)
     memberUnit.set(mid, k);
     if (k.charAt(0) !== 'i-' && !units.has(k)) {
       units.set(k, { key: k, name: famDefaultName(m), members: [mid], kids: new Set(), kidsCount: 0, isRoot: true, hasGrand: false, tier: 'roots', persons: [m] });
     }
   });
-  // الوحدات المعزولة
+  // Isolated units
   (list || []).forEach(m => {
     const mid = String(m.id);
     if (memberUnit.get(mid) && memberUnit.get(mid).charAt(0) === 'i-') {
@@ -1817,18 +1817,18 @@ function saveFamilyScope() {
 }
 function famClusterColor(i) { return FAMILY_COLORS[i % FAMILY_COLORS.length]; }
 
-/* سلّم union-find: يجمّع الأعضاء المتصلين بالدم (parentId) أو الزواج (spouseId) */
+/*Union-find ladder: collects members connected by blood (parentId) or by marriage (spouseId)*/
 function buildFamilyClusters(list, mode) {
   const clusters = [];
   if (!list || !list.length) return clusters;
   if (mode === 'blood') {
-    /* بالدم: العائلة = الزوج + زوجته + نسلهما (couple-based).
-       لكل وحدة حسب العقل المنطقي:
-         childless = زوجان بلا أبناء
-         roots     = الجذور (الزوجان بلا أب داخل العائلة)
-         grandparents = الأجداد (لديهم أحفاد)
-         parents   = الآباء (لديهم أبناء بلا أحفاد)
-       العدد = حجم الذرية الكاملة (descendants) للوحدة. */
+    /*By blood and marriage: the family = husband + wife + their descendants (couple-based).
+Each unit is classified by family logic:
+childless = spouses with no children
+roots     = the roots (the spouses with no parent inside the family)
+grandparents = the grandparents (they have grandchildren)
+parents   = the parents (they have children but no grandchildren)
+The count = the size of the unit's full descendant set.*/
     const byId = new Map((list || []).map(m => [String(m.id), m]));
     const childrenOf = new Map();
     (list || []).forEach(m => {
@@ -1859,7 +1859,7 @@ function buildFamilyClusters(list, mode) {
         unit: u
       };
     }));
-    // مرتبة حسب الطبقات حتى تظهر الجذور ثم الأجداد ثم الآباء ثم بلا أبناء
+    // Sorted by layer, so the roots appear first, then the grandparents, then the parents, then the childless ones
     clusters.sort((a, b) => (tierSort[a.tier] ?? 9) - (tierSort[b.tier] ?? 9) || (b.members.length - a.members.length));
     return clusters;
   }
@@ -5034,9 +5034,9 @@ function personCard(m, genOverride) {
 
 
 /**
- * رسم خطوط SVG حية بين الآباء والأبناء والأزواج — 4 أنماط:
- * elegant (منحنيات أنيقة + قلوب) | flow (تدفق متحرك) | neon (توهج) | ortho (هيكلي 90°)
- * يُعاد الرسم عند كل تحريك/تقريب لتبقى الخطوط ملتصقة بالبطاقات دائماً.
+Draw live SVG links between parents, children and spouses — 4 styles:
+elegant (elegant curves + hearts) | flow (animated flow) | neon (glow) | ortho (orthogonal 90°)
+Re-drawn on every pan/zoom, so the links stay attached to the cards at all times.
  */
 function drawSVGConnections(style) {
   const canvas = $('tree-canvas');
@@ -5076,14 +5076,14 @@ function drawSVGConnections(style) {
   const flowCls = isFlow ? ' con-flow' : '';
   const neonCls = isNeon ? ' con-neon' : '';
 
-  // ═══ 1. الأهل → الأبناء ═══
+  // ═══ 1. Parents → children ═══
   canvas.querySelectorAll('.ft-descent').forEach(descent => {
     const couple = descent.previousElementSibling;
     if (!couple || !couple.classList || !couple.classList.contains('ft-couple')) return;
     const parents = couple.querySelectorAll(':scope > .ft-person');
     if (!parents.length) return;
 
-    // نقطة الارتساء أسفل الزوجين (المنتصف بين البطاقتين في الأسفل)
+    // Anchor point below the couple (the midpoint under the two bottom cards)
     let pX = 0, pY = 0;
     if (parents.length >= 2) {
       const r1 = parents[0].getBoundingClientRect();
@@ -5115,7 +5115,7 @@ function drawSVGConnections(style) {
     if (!anchors.length) return;
 
     if (isOrtho) {
-      // خط رأسي من الأهل إلى خط الجيل الأفقي ثم عمودي لكل ابن
+      // A vertical line from the parents down to the generation line, then a vertical drop for each child
       const busY = Math.min(...anchors.map(a => a.y));
       const minX = Math.min(...anchors.map(a => a.x));
       const maxX = Math.max(...anchors.map(a => a.x));
@@ -5142,7 +5142,7 @@ function drawSVGConnections(style) {
     }
   });
 
-  // ═══ 2. الأزواج (خط + قلب) ═══
+  // ═══ 2. Couples (line + heart) ═══
   const spousePairs = new Set();
   canvas.querySelectorAll('.ft-couple').forEach(couple => {
     const persons = couple.querySelectorAll(':scope > .ft-person');
@@ -5169,7 +5169,7 @@ function drawSVGConnections(style) {
     content += `<text class="con-heart" x="${midX}" y="${midY - 4}" dominant-baseline="middle">${isElegant ? '💗' : '💖'}</text>`;
   });
 
-  // ═══ 3. زواج بين عائلتين مختلفتين — خط متقطع ذهبي يربط بلوك العائلتين ═══
+  // ═══ 3. Marriage between two different families — a dashed golden line linking the two family blocks ═══
   const famBlocks = new Map();
   canvas.querySelectorAll('.ft-fam-block').forEach(b => famBlocks.set(b.dataset.fam, b));
   const xfamSeen = new Set();
@@ -5210,7 +5210,7 @@ function drawSVGConnections(style) {
   svg.innerHTML = content;
 }
 
-/* ═══ MINIMAP: خريطة مصغرة للشجرة مع نافذة الرؤية ═══ */
+/*═══ MINIMAP: a miniature map of the tree with a viewport window ═══*/
 let __mmData = null;
 function buildMinimap() {
   const mm = $('tree-minimap');
@@ -5220,7 +5220,7 @@ function buildMinimap() {
   if (!cards.length) { mm.style.display = 'none'; return; }
   mm.style.display = 'block';
 
-  // حساب المواضع في إحداثيات المحتوى (بدون تأثير التحويل)
+  // Compute the positions in content coordinates (without applying the transform)
   const contentPos = el => {
     const cr = canvas.getBoundingClientRect();
     const eff = canvas.offsetWidth > 0 ? cr.width / canvas.offsetWidth : 1;
@@ -5274,7 +5274,7 @@ function drawMinimapViewport() {
   v.setAttribute('height', vh * d.scale);
 }
 
-/* تنقّل بالنقر/السحب على الخريطة المصغرة */
+/*Navigate by clicking / dragging on the minimap*/
 function setupMinimapNav() {
   const mm = $('tree-minimap');
   const wrap = $('tree-wrap');
@@ -5295,7 +5295,7 @@ function setupMinimapNav() {
   window.addEventListener('mouseup', () => { dragging = false; if (mm) mm.style.cursor = 'pointer'; });
 }
 
-/* ═══ بحث داخلي في الشجرة مع الإبراز والتوجيه ═══ */
+/*═══ In-tree search with highlighting and navigation ═══*/
 function bindTreeSearch() {
   const inp = $('tree-search');
   if (!inp) return;
@@ -5610,7 +5610,7 @@ function renderSettings() {
         <div class="settings-section-title">ℹ️ ${t('settings.info')}</div>
         <p style="color:var(--muted);font-size:13px">${t('settings.aboutText')}</p>
 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
-          <!-- ⬆️ التحديث الشهري: صدّق الرقم فقط في سطر APP_VERSION (v2.6 ← v2.7) -->
+<!-- ⬆️ Monthly update: only bump the number on the APP_VERSION line (v2.6 ← v2.7) -->
           <span style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--gold),#a9852f);color:#1d1506;font-weight:900;font-size:12.5px;padding:5px 14px;border-radius:20px;direction:ltr;font-family:Consolas,Menlo,monospace;letter-spacing:.4px;box-shadow:0 3px 12px rgba(0,0,0,.38);white-space:nowrap">📦 ${APP_VERSION}</span>
           <span style="color:var(--dim);font-size:12px">${t('settings.memberCount')} ${members.length}</span>
         </div>
@@ -7445,9 +7445,9 @@ function downloadBlob(blob, fname) {
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 
-/* افتح نافذة "حفظ باسم" الحقيقية عبر showSaveFilePicker،
-   وإن لم تتوفر (بيئة لا تدعمها) نُنزّل مع تذكير مرئي أين وُضع الملف.
-   إلغاء المستخدم للنافذة لا يفرّغ التنزيل الصامت. */
+/*Open the real "Save as" dialog via showSaveFilePicker,
+and if it is unavailable (an environment that does not support it), download the file with a visible note of where it was placed.
+Cancelling the dialog by the user must not trigger the silent download.*/
 async function saveUserFile(blob, suggestedName, mime) {
   if (window.showSaveFilePicker && typeof window.showSaveFilePicker === 'function') {
     try {
@@ -7459,7 +7459,7 @@ async function saveUserFile(blob, suggestedName, mime) {
       await writable.write(blob);
       await writable.close();
       return true;
-    } catch (e) { return false; } // ألغى المستخدم أو فشل
+    } catch (e) { return false; } // The user cancelled, or it failed
   }
   downloadBlob(blob, suggestedName);
   showToast(t('toast.downloadedFallback') || ('💾 ' + (suggestedName || t('download.tree'))));
@@ -7489,7 +7489,7 @@ async function exportTreeImage(kind) {
     const snap = await html2canvas(canvas, { backgroundColor: getComputedStyle(document.body).getPropertyValue('--bg').trim() || '#ffffff', scale: 2, useCORS: true, logging: false });
     ctx.drawImage(snap, 0, 0, w, h);
     canvas.style.transform = prevTransform;
-    // إعادة رسم الوصلات بعد التصدير (تحويلات الإحداثيات تعود إلى الوضع الحي)
+    // Redraw the links after exporting (the coordinate transforms return to live mode)
     if (['elegant','flow','neon','ortho'].includes(treeLineStyle)) drawSVGConnections(treeLineStyle);
     const stamp = new Date().toISOString().slice(0, 10);
     if (kind === 'pdf') {
@@ -7525,14 +7525,14 @@ const EXPORT_FORMATS = [
   { id: 'pdf', label: 'PDF', txt: 'exportWizard.fmtPdf', mime: 'application/pdf', ext: 'pdf', icon: '🖨️' }
 ];
 
-/* أعمدة التصدير بعناوين مترجمة من القيم المخزنة لدى العضو.
-   القيم تُخرج بلغة الواجهة المختارة (t()): الجنس، صلة القرابة، والبرج تُترجم محلياً. */
+/*Export columns with headers translated from the values stored on the member.
+Values are written in the selected interface language (t()): gender, kinship relation and zodiac sign are translated locally.*/
 const EXPORT_FIELDS = [
-  /* الأعمدة 0..16 مطابقة تماماً لترتيب /api/import/csv على الخادم:
+  /*Columns 0..16 match exactly the /api/import/csv order on the server:
      name, birth_date, death_date, gender, relation, parent_id, phone, email,
      national_id, occupation, education, blood_type, location, notes,
-     birth_country, birth_region, birth_detail — حتى يكون التصدير قابل لإعادة
-     الاستيراد بأمان (ضع القيم الأساسية بالشكل الخام) ثم الأعمدة الموسعة بعدها. */
+birth_country, birth_region, birth_detail — so that the export can be re-imported
+safely (keep the core values in their raw form), then the extended columns after them.*/
   { id: 'name', h: 'table.colName', get: m => m.name || '' },
   { id: 'birthDate', h: 'memberModal.birthDate', get: m => m.birthDate || '' },
   { id: 'deathDate', h: 'memberModal.deathDate', get: m => m.deathDate || '' },
@@ -7550,7 +7550,7 @@ const EXPORT_FIELDS = [
   { id: 'birthCountry', h: 'memberModal.country', get: m => m.birthCountry || '' },
   { id: 'birthRegion', h: 'memberModal.region', get: m => (typeof decodeRegion === 'function' ? decodeRegion(m.birthRegion || '').region : m.birthRegion) || '' },
   { id: 'birthDetail', h: 'exportWizard.colBirthDetail', get: m => m.birthDetail || '' },
-  /* الأعمدة الموسعة بعدها للعرض المترجم والقراءة البشرية (يتجاهلها الاستيراد الخادمي آمن) */
+  /*The extended columns come afterwards for the translated display and human readability (the server-side importer safely ignores them)*/
   { id: 'id', h: 'exportWizard.colId', get: m => (m.id != null ? String(m.id) : '') },
   { id: 'father', h: 'memberModal.fatherLabel', get: m => nameOf(m.parentId) },
   { id: 'fatherId', h: 'exportWizard.colFatherId', get: m => m.parentId || '' },
@@ -7589,7 +7589,7 @@ function zodiacName(m) {
   return z.name || '';
 }
 
-let EXPORT_MOTHERS = {}; // childId -> motherId (من علاقات biological_parent، مع احتياطي)
+let EXPORT_MOTHERS = {}; // childId -> motherId (from the biological_parent relations, with a fallback)
 
 function exportColumns() {
   const list = exportViews();
@@ -7627,7 +7627,7 @@ function buildExportCSV() {
   const cols = exportColumns();
   const escCsv = v => {
     let s = String(v == null ? '' : v);
-    if (/^[=+\-@]/.test(s)) s = "'" + s; // منع حقن الصيغ
+    if (/^[=+\-@]/.test(s)) s = "'" + s; // Prevent formula injection
     if (/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g, '""') + '"';
     return s;
   };
@@ -7784,8 +7784,8 @@ function buildExportPDF() {
   return pdf.output('blob');
 }
 
-/* مجموعة التصدير: كامل الأعضاء غير المفلترين (يُرجع مصفوفة)
-   مع بناء خريطة الأمهات (biological_parent → child->mother) */
+/*The export set: all unfiltered members (returns an array)
+while building the mother map (biological_parent -> child->mother)*/
 let EXPORT_POOL = null;
 async function exportPool() {
   try {
@@ -8310,7 +8310,7 @@ document.addEventListener('click', e => {
     return;
   }
 
-  // Backup (full CSV snapshot → عبر معالج التصدير متعدد الصيغ)
+  // Backup (full CSV snapshot -> goes through the multi-format export handler)
   if (t.closest('#btn-s-backup-table')) { openExportWizard(); return; }
 
   // Trash actions
@@ -9495,14 +9495,14 @@ function relIsSib(a, b) {
   return !!(A.parentId && B.parentId && String(A.parentId) === String(B.parentId));
 }
 function inlawKey(egoId, targetId) {
-  /* Precise client-side kinship classifier for in-law (المصاهرة) pairs.
+  /*Precise client-side kinship classifier for in-law pairs.
      The compiled backend only ever emits rel.sisterInLaw/brotherInLaw/
-     inLawGeneral (أو أخت/أخو الزوج) for every in-law edge; here we compute
+inLawGeneral (or the spouse's brother/sister) for every in-law edge; here we compute
      the exact Arabic term from the real family graph:
-       - sibling of EGO's SPOUSE  → أخو/أخت الزوج/الزوجة (wifeSister …)
-       - spouse of EGO's SIBLING → زوجة الأخ / زوج الأخت (wifeOfBrother …)
-       - spouse of EGO's SPOUSE's SIBLING → سلفة (wives of brothers) /
-         سلف (husbands of sisters) when both ends share one gender.
+- sibling of EGO's SPOUSE  → the spouse's brother/sister (wifeSister …)
+- spouse of EGO's SIBLING → the brother's wife / the sister's husband (wifeOfBrother …)
+- spouse of EGO's SPOUSE's SIBLING → the brothers' wives (wives of brothers) /
+the sisters' husbands (husbands of sisters) when both ends share one gender.
      Returns a 'rel.*' key, or null when not a precise in-law pair. */
   const ego = relMember(egoId), tgt = relMember(targetId);
   if (!ego || !tgt) return null;
@@ -9530,9 +9530,9 @@ function inlawKey(egoId, targetId) {
 function relInlawFix(path, idx) {
   /* Backend graph patently mislabels every in-law reached via the LAST
      spouse-edge as "the SUBJECT's spouse-sibling" (rel.sisterInLaw /
-     rel.brotherInLaw → "أخت/أخو الزوج/الزوجة").  When the in-law path
+rel.brotherInLaw → "the spouse's sister/brother").  When the in-law path
      node is really the subject's own sibling's spouse (Mohanad
-     --sibling--> Adnan --spouse--> Gofran ⇒ "زوجة الأخ") or one of the
+--sibling--> Adnan --spouse--> Gofran ⇒ "the brother's wife") or one of the
      other precise cases above, inlawKey() supplies the exact Arabic term.
      Returns the corrected localized label, or null when not applicable. */
   if (!path || idx <= 0) return null;
@@ -9542,9 +9542,9 @@ function relInlawFix(path, idx) {
   return k ? t(k) : null;
 }
 function relNephewFix(p) {
-  /* الخادم يرسل كثيرًا «nephew/niece» دون جهة الأخوة، فيظهر «ابن الأخ»
-     حتى لأبناء الأخت. نحدد الجهة من الخطوة السابقة في المسار، ثم نختار
-     المفتاح المفصّل الصحيح من الكتالوج (rel.nephewSister = ابن الأخت …). */
+  /*The server often sends "nephew/niece" without specifying which side of the sibling pair,
+so "the brother's son" can even appear for a sister's children. We take the side from the
+previous step of the path, then choose the correct detailed key from the catalogue (rel.nephewSister = the sister's son …).*/
   if (!p || !p.path || p.path.length < 2) return null;
   const last = p.path[p.path.length - 1];
   const lk = last && last.relation;
