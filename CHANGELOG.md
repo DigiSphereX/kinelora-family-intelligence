@@ -41,5 +41,20 @@ First public release of KinElora Family Intelligence.
   the application fail with `Invalid isoformat string: ''` when reading an
   existing database, which broke the dashboard, tree, timeline, horoscope and
   relatives index. The shipped sample database is now normalized to `NULL`.
+- In-app support links: a **Donate** button in the sidebar and a *Support this
+  project* section in Settings open the PayPal and GitHub Sponsors pages in your
+  browser, with a one-click copy of the donate link.
+- Settings *Information* panel now shows the developer (DigiSphereX), the MIT
+  license, the repository link, and separate release (`v1.0.0`) and build (`v2.6`)
+  version badges.
+- The interface stylesheet and script were extracted out of `index.html` into
+  `static/css/app.css` and `static/js/app.js`; the pages also gained an explicit
+  favicon link.
+- **Fix:** 86 corrupted strings in the English dictionary (double-encoded emoji,
+  dashes, arrows and ellipses such as `â€”`) were repaired, 12 new interface
+  strings were added to English and Arabic, and the missing `tree.lineCurved`
+  key was added to Arabic.
+- Screenshots regenerated to match the sidebar donate button and the new
+  Settings sections.
 
 [1.0.0]: https://github.com/DigiSphereX/kinelora-family-intelligence/releases/tag/v1.0.0

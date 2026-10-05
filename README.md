@@ -44,6 +44,9 @@ can explore every screen before entering anything of your own.
   Portuguese, Turkish, Urdu, Persian, Hindi, Chinese, Russian and Indonesian.
   English is the default and every other language falls back to English for any
   string it has not translated yet.
+- **Support links** — a *Donate* button in the sidebar and a *Support this
+  project* section in Settings open PayPal or GitHub Sponsors in your browser;
+  the *Information* panel shows the developer, license and version.
 - **Dark and light themes**, plus a trash view with restore for deleted records.
 
 ## Download / Getting started
@@ -91,7 +94,7 @@ is the safer route because it merges into your own database instead of replacing
 
 ## Screenshots
 
-All pages in the English interface, captured from the released build with the
+All pages in the English interface, captured from the v1.0.0 build with the
 demo family loaded (1440x900):
 
 ![Login](https://raw.githubusercontent.com/DigiSphereX/kinelora-family-intelligence/main/ScreenShot/01-login.png)
@@ -105,6 +108,7 @@ demo family loaded (1440x900):
 ![Settings](https://raw.githubusercontent.com/DigiSphereX/kinelora-family-intelligence/main/ScreenShot/09-settings.png)
 ![Trash](https://raw.githubusercontent.com/DigiSphereX/kinelora-family-intelligence/main/ScreenShot/10-trash.png)
 ![Dashboard light theme](https://raw.githubusercontent.com/DigiSphereX/kinelora-family-intelligence/main/ScreenShot/11-dashboard-light.png)
+![Settings — support and information](https://raw.githubusercontent.com/DigiSphereX/kinelora-family-intelligence/main/ScreenShot/12-settings-support.png)
 
 ## How it works
 
@@ -128,7 +132,7 @@ This repository is the **open interface layer and the English demo dataset**:
 | Path | Contents |
 |---|---|
 | `_internal/family_tracker/templates/` | `index.html`, `login.html`, `register.html` — the complete application interface |
-| `_internal/family_tracker/static/` | Logo, application icon, vendored libraries (charts, PDF, canvas capture), web fonts and the 14 translation dictionaries |
+| `_internal/family_tracker/static/` | `css/app.css` (stylesheet), `js/app.js` (application script), logo, application icon, vendored libraries (charts, PDF, canvas capture), web fonts and the 14 translation dictionaries |
 | `sample-data/` | The fictional Johnson Family demo database, CSV and JSON export |
 | `ScreenShot/` | Screenshots of every page |
 

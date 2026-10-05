@@ -28,7 +28,8 @@ KinElora module on clean, consistent English data.
   - Deaths (James Sr, Robert, Daniel).
 - **Marriages** — 4 couples with dates (1958, 1984, 2015, 2016) in
   `member_spouses` plus bidirectional `spouse_id`.
-- **Field variety** — 9 different blood types, 8 countries (US, GB, DE, AE),
+- **Field variety** — 8 blood types (A+/-, B+/-, AB+/-, O+/-), 4 countries
+  (US, GB, DE, AE),
   varied occupations and education, mixed `notify_birthday` flags, and birth
   regions in the translatable `◈KE:en` format (see *Language* below).
 - **Side modules** — 4 places, 3 events (wedding / birth / death), 3 tags,
