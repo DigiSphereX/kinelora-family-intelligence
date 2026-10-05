@@ -54,7 +54,21 @@ First public release of KinElora Family Intelligence.
   dashes, arrows and ellipses such as `â€”`) were repaired, 12 new interface
   strings were added to English and Arabic, and the missing `tree.lineCurved`
   key was added to Arabic.
-- Screenshots regenerated to match the sidebar donate button and the new
-  Settings sections.
+- All 14 translation dictionaries were completed to full English parity: every
+  dictionary now exposes exactly the same keys with matching placeholders, the
+  missing interface strings were added and translated, untranslated strings
+  were localized, orphan keys were removed, and the `love.between` /
+  `love.year` strings now read correctly with the displayed age range.
+- **Fix:** the layout was permanently right-to-left (`direction:rtl` on `body`
+  and `dir="rtl"` in the page templates). It now follows the selected language:
+  all 11 left-to-right languages get the mirrored, correctly aligned layout
+  while Arabic, Persian and Urdu remain right-to-left.
+- **Fix:** the Settings *Information* panel hardcoded the English word "build";
+  the label is now translated in all 14 languages.
+- Verified at runtime in all 14 languages: language switch, direction
+  (RTL/LTR), reload persistence, placeholder substitution and error-free
+  rendering of every view.
+- Screenshots regenerated to match the sidebar donate button, the new
+  Settings sections and the corrected left-to-right layout.
 
 [1.0.0]: https://github.com/DigiSphereX/kinelora-family-intelligence/releases/tag/v1.0.0

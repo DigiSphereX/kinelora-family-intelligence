@@ -54,7 +54,7 @@ let FAMILY_CLUSTER_ORDER = [];      // [{name,count,color}] for picker
 let FAMILY_BLOODLINES = null;       // Map familyName -> Set(memberId) for blood-mode filtering
 let FAMILY_SCOPE_ALL = null;        // full member list for cluster recomputation
 const FAMILY_COLORS = ['#f4c95d', '#7fb3e0', '#a8d189', '#e5989b', '#b39ddb', '#ffb86b', '#84d2c5', '#f28fa3', '#7dd3fc', '#f6c453', '#a3e635', '#fca5a5', '#93c5fd', '#f9a8d4', '#c4b5fd', '#86efac'];
-function famDefaultName(m) { return (m && (m.family || m.name)) || '؟'; }
+function famDefaultName(m) { return (m && (m.family || m.name)) || '?'; }
 function famAnd() { return (window.i18n && i18n.current() === 'ar') ? ' و ' : ' & '; }
 function uniFamilyName(name, used) {
   if (!used.has(name)) { used.add(name); return name; }
@@ -246,8 +246,8 @@ The count = the size of the unit's full descendant set.*/
     members.forEach(x => { if (x.parentId && members.some(o => o.id === x.parentId)) (kid[x.parentId] = kid[x.parentId] || []).push(x.id); });
     const depthOf = mid => { let d = 0; const rec = (i, l) => { d = Math.max(d, l); (kid[i] || []).forEach(c => rec(c, l + 1)); }; rec(mid, 1); return d; };
     const led = roots.slice().sort((a, b) => (depthOf(b.id)) - (depthOf(a.id))).slice(0, 2).map(r => famDefaultName(r)).filter(Boolean);
-    let name = led.join(' و ');
-    if (roots.length > led.length) name = (name || famDefaultName(roots[0])) + ' ' + (typeof t === 'function' ? t('famScope.relatives') : 'وأقاربهم');
+    let name = led.join(famAnd());
+    if (roots.length > led.length) name = (name || famDefaultName(roots[0])) + ' ' + (typeof t === 'function' ? t('famScope.relatives') : 'and relatives');
     if (!name) name = roots.map(r => famDefaultName(r)).join(' + ') || famDefaultName(members[0]);
     clusters.push({ name, members });
   });
@@ -2121,7 +2121,7 @@ function renderChineseHoro(content, mAll) {
       return `<div class="horo-card" data-cn="${s.key}" style="border-top:3px solid ${s.color}">
         <div class="horo-sym" style="color:${s.color}">${s.sym}</div>
         <div class="horo-name" style="color:${s.color}">${useCnName(s.key)}</div>
-        <div class="horo-meta">${t('chinese.bornIn')}: ${yrs.slice(0, 6).join('، ')}</div>
+        <div class="horo-meta">${t('chinese.bornIn')}: ${yrs.slice(0, 6).join(listSep())}</div>
         <span class="cn-el" style="background:${elBg}22;color:${elBg}">${_bi(CN_EL_NAME[s.el])}</span>
         ${members.length ? `<div class="horo-count">👥 ${t('chinese.count', {count: members.length})}</div>` : ''}
         <div class="horo-snippet">${esc(predTxt.length > 90 ? predTxt.slice(0, 90) + '…' : predTxt)}</div>
@@ -2141,7 +2141,7 @@ function openChineseDetail(key) {
     <div class="modal-title">${s.sym} ${useCnName(key)}</div>
     <div style="text-align:center;font-size:12px;color:var(--muted);margin-bottom:12px">
       <span class="cn-el" style="background:${elBg}22;color:${elBg}">${_bi(CN_EL_NAME[s.el])}</span>
-      <span style="margin-inline:6px">${t('chinese.bornIn')}: ${yrs.slice(0, 8).join('، ')}</span>
+      <span style="margin-inline:6px">${t('chinese.bornIn')}: ${yrs.slice(0, 8).join(listSep())}</span>
     </div>
     <div class="horo-sec"><b>💪 ${t('chinese.traits')}</b><div>${esc(_cnTrait(s))}</div></div>
     <div class="horo-sec"><b>🔮 ${t('chinese.outlook')}</b><div>${esc(_cnPred(s))}</div></div>
@@ -3981,7 +3981,7 @@ function renderSettings() {
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px">
 <!-- Release badge: APP_RELEASE matches the GitHub release tag; bump APP_VERSION with the monthly build -->
           <span style="display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--gold),#a9852f);color:#1d1506;font-weight:900;font-size:12.5px;padding:5px 14px;border-radius:20px;direction:ltr;font-family:Consolas,Menlo,monospace;letter-spacing:.4px;box-shadow:0 3px 12px rgba(0,0,0,.38);white-space:nowrap">📦 ${APP_RELEASE}</span>
-          <span style="color:var(--dim);font-size:12px;direction:ltr">build ${APP_VERSION}</span>
+          <span style="color:var(--dim);font-size:12px">${t('settings.buildVersion')} ${APP_VERSION}</span>
           <span style="color:var(--dim);font-size:12px">${t('settings.memberCount')} ${members.length}</span>
         </div>
         <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:grid;gap:7px;font-size:13px;color:var(--muted)">
@@ -5228,7 +5228,7 @@ function showNodePopup(id) {
 
   const popup = document.createElement('div');
   popup.id = 'node-popup';
-  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--border);border-top:3px solid ' + m.zodiac.color + ';border-radius:16px;padding:20px;width:320px;z-index:400;font-family:Tajawal,sans-serif;direction:rtl;color:var(--text);box-shadow:0 20px 60px var(--shadow);max-height:90vh;overflow-y:auto';
+  popup.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--s1);border:1px solid var(--border);border-top:3px solid ' + m.zodiac.color + ';border-radius:16px;padding:20px;width:320px;z-index:400;font-family:Tajawal,sans-serif;color:var(--text);box-shadow:0 20px 60px var(--shadow);max-height:90vh;overflow-y:auto';
 
   popup.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
     <div><div style="font-size:18px;font-weight:900">${m.gender === 'female' ? '👩' : '👨'} ${esc(dispName(m))}</div>
@@ -5346,7 +5346,7 @@ function bcRowHtml(name = '', gender = 'male') {
   const m = name ? ` value="${esc(name)}"` : '';
   const maleOn = gender === 'male' ? ' on' : '';
   const femaleOn = gender === 'female' ? ' on' : '';
-  return `<div class="bc-row" style="direction:rtl">
+  return `<div class="bc-row">
     <div class="bc-sex">
       <button type="button" class="bc-m${maleOn}" title="${t('memberModal.gender.male')}">👨</button>
       <button type="button" class="bc-f${femaleOn}" title="${t('memberModal.gender.female')}">👩</button>
