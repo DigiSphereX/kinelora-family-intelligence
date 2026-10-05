@@ -1,0 +1,54 @@
+# ── Frozen bundle / executable / demo assets ─────────────────────────
+*.exe
+svg-tree-*.html
+build_logo.py
+
+# ── Python runtime and dependencies bundled by PyInstaller ──────────
+# Only family_tracker/templates and family_tracker/static are kept as source.
+_internal/*
+!_internal/family_tracker
+_internal/family_tracker/*
+!_internal/family_tracker/templates
+!_internal/family_tracker/static
+_internal/family_tracker/static/uploads
+bin/
+
+# ── Real personal data (never published) ───────────────────────────
+data/
+*.db
+*.db-wal
+*.db-shm
+*.kfa
+secret.key
+cookies.txt
+
+# The shipped English demo database must stay in the repository.
+!sample-data/sample-english.db
+
+# ── Local exports, backups and development-only folders ────────────
+members_data.js
+tree-experiment-svg.html
+docs/
+scripts/
+
+# ── Runtime / environment ──────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+build/
+dist/
+*.spec
+
+# ── IDE / operating system ─────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# ── Logs ───────────────────────────────────────────────────────────
+*.log
+logs/

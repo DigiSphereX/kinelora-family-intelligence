@@ -1,0 +1,17 @@
+﻿name,birth_date,death_date,gender,relation,parent_id,phone,email,national_id,occupation,education,blood_type,location,notes,birth_country,birth_region,birth_detail
+James Johnson Sr,1935-04-12,2010-03-01,male,husband,,+1 (312) 555-0101,grandpa@example.com,US-0001,Retired teacher,High school,O+,"Chicago, USA",Loved gardening.,US,Illinois,Born at home
+Mary Beth Johnson,1938-09-23,,female,wife,,+1 (312) 555-0102,grandma@example.com,US-0002,Homemaker,High school,A+,"Chicago, USA",Still bakes every Sunday.,US,Illinois,
+Michael Johnson,1960-01-15,,male,son,3d0fd333-039b-462b-8a30-e794c54c9cb3,+44 20 7946 0958,michael@example.com,GB-1001,Engineer,Bachelor,B+,"London, UK",Moved to London in 1990.,GB,Greater London,
+Susan Johnson,1963-05-30,,female,daughter,3d0fd333-039b-462b-8a30-e794c54c9cb3,+1 (415) 555-0199,susan@example.com,US-1002,Doctor,MD,AB+,"San Francisco, USA",Married twice.,US,California,
+Robert Johnson,1966-11-02,2021-02-14,male,son,3d0fd333-039b-462b-8a30-e794c54c9cb3,+49 30 901820,robert@example.com,DE-1003,Baker,Vocational,O-,"Berlin, Germany",Ran a bakery.,DE,Berlin,
+Diane Foster,1962-03-19,,female,wife,,+44 20 7946 0959,diane@example.com,GB-1003,Nurse,Associate,A-,"London, UK",,GB,Greater London,
+Emily Johnson,1988-08-10,,female,daughter,077e1ae2-2257-47b4-b057-11848d90d2c8,+971 50 123 4567,emily@example.com,AE-2001,Architect,Master,AB-,"Dubai, UAE",,AE,Dubai,
+James Johnson Jr,1991-02-25,,male,son,077e1ae2-2257-47b4-b057-11848d90d2c8,+1 (480) 555-0134,james@example.com,US-2002,Software engineer,Bachelor,B+,"Phoenix, USA",,US,Arizona,
+Olivia Johnson,1994-12-05,,female,daughter,,,olivia@example.com,US-2003,Teacher,Bachelor,O+,"Portland, USA",Father unknown.,US,Oregon,
+Daniel Johnson,1997-06-18,2024-09-09,male,son,40ba126d-74f3-45e4-8874-6d44cdaaf462,+49 151 23456789,daniel@example.com,DE-2004,Student,,B-,"Berlin, Germany",Passed in 2024.,DE,Berlin,
+David Smith,1987-06-30,,male,husband,,+971 50 765 4321,david@example.com,AE-2005,Doctor,MD,O+,"Dubai, UAE",Emily Johnson husband.,AE,Dubai,
+Jessica Moore,1989-03-14,,female,wife,,+1 (480) 555-0188,jessica@example.com,US-2006,Lawyer,JD,O-,"Phoenix, USA",James Johnson wife.,US,Arizona,
+Lily Johnson,2017-04-01,,female,daughter,df7c7fda-850c-459b-bee5-acd9076cb82f,,,AE-3001,,,A+,"Dubai, UAE",,AE,Dubai,
+Mason Johnson,2019-09-15,,male,son,df7c7fda-850c-459b-bee5-acd9076cb82f,,,AE-3002,,,O+,"Dubai, UAE",,AE,Dubai,
+Harper Johnson,2018-07-20,,female,daughter,227baf32-118a-4f95-9f93-619601dfe422,,,US-3003,,,AB+,"Phoenix, USA",,US,Arizona,
+Ethan Johnson,2021-01-30,,male,son,227baf32-118a-4f95-9f93-619601dfe422,,,US-3004,,,O-,"Phoenix, USA",,US,Arizona,
