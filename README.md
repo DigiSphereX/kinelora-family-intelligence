@@ -1,13 +1,13 @@
 # KinElora Family Intelligence
 
-<a href="https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%F0%9F%92%B9%20Donate%20with%20PayPal-PayPal-0070BA?style=for-the-badge&logo=paypal&logoColor=white" alt="Donate with PayPal" height="28"></a>
-<a href="https://github.com/sponsors/DigiSphereX" target="_blank" rel="noopener"><img src="https://img.shields.io/badge/%E2%98%95%20Sponsor%20on%20GitHub-ea4aaa?style=for-the-badge&logo=github&logoColor=white" alt="Sponsor on GitHub" height="28"></a>
+[![License: MIT](https://img.shields.io/badge/License-MIT-informational.svg?style=for-the-badge)](LICENSE)
+[![Release](https://img.shields.io/badge/Release-v1.0.0-brightgreen.svg?style=for-the-badge)](https://github.com/DigiSphereX/kinelora-family-intelligence/releases/latest)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-0070BA.svg?style=for-the-badge)](https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2)
 
 ![Version](https://img.shields.io/badge/version-1.0.0-f5c518)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D4)
 ![Languages](https://img.shields.io/badge/languages-14-informational)
 ![Offline](https://img.shields.io/badge/data-local%20SQLite-success)
-![License](https://img.shields.io/badge/license-MIT-green)
 
 KinElora Family Intelligence is a private, offline-first desktop application for
 building and studying a family tree: it keeps every relative, relationship, date,
@@ -170,28 +170,8 @@ tracking, no premium tier, and your family data never leaves your computer. If i
 saved you time or brought your family tree back to life, a small contribution keeps
 it maintained and free for everyone.
 
-<table>
-<tr>
-<td align="center" width="50%">
-
-**PayPal — one-time gift**
-
-[![Donate with PayPal](https://img.shields.io/badge/%F0%9F%92%B9%20Donate%20with%20PayPal-PayPal-0070BA?style=for-the-badge&logo=paypal&logoColor=white&logoSize=auto)](https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2)
-
-Any amount helps. One click, no account required.
-
-</td>
-<td align="center" width="50%">
-
-**GitHub Sponsors — monthly**
-
-[![Sponsor on GitHub](https://img.shields.io/badge/%E2%98%95%20Sponsor%20on%20GitHub-ea4aaa?style=for-the-badge&logo=github&logoColor=white&logoSize=auto)](https://github.com/sponsors/DigiSphereX)
-
-Recurring support for long-term maintenance and new releases.
-
-</td>
-</tr>
-</table>
+- [GitHub Sponsors](https://github.com/sponsors/DigiSphereX) — recurring support for long-term maintenance and new releases
+- [PayPal](https://www.paypal.com/donate/?hosted_button_id=CFANQH892RPH2) — one-time gift, any amount, no account required
 
 **Not able to donate? These help just as much:**
 
